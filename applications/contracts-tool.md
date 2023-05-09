@@ -74,9 +74,9 @@ It is going to be used also to messure ink! language performance by Parity core 
 
 ### Contact
 
-- **Sebastian Miasojed:** Full name of the contact person in your team
-- **s.miasojed@gmail.com:** Contact email (e.g. john@duo.com)
-- **Website:** None
+- **Contact Name:** Sebastian Miasojed
+- **Contact Email:** s.miasojed@gmail.com
+- **Website:** 
 
 ### Legal Structure
 
@@ -91,12 +91,12 @@ Until now the team has shown his profficiency alligning smart-bench with newest 
 ### Team Code Repos
 
 - https://github.com/smiasojed
-- https://github.com/<team_member_2>
+- https://github.com/karolk91
 
 ### Team LinkedIn Profiles (if available)
 
-- hhttps://www.linkedin.com/in/sebastian-miasojed-83b6123/
-- https://www.linkedin.com/<person_2>
+- https://www.linkedin.com/in/sebastian-miasojed-83b6123
+- https://www.linkedin.com/in/karol-kokoszka-a66959103
 
 
 ## Development Status :open_book:
