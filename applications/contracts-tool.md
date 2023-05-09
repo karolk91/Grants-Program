@@ -18,18 +18,22 @@ Our team has strong interest in contracts development on Polkadot and building P
 Project is based on smart-bench Parity repo https://github.com/paritytech/smart-bench and developed in rust language.
 Apart of existing ink! and solidity contracts support, will be introduces support for solang compiled contract running on pallet-contract.
 Finally the tool will messure performance of:
--Ink! contract run on pallet-contract (currently supported)
--Solidity contracts comiled with solc run on pallet-evm (supported but outdated)
--Solidity contracts compiled with solang and run on pallet-contract (new funtionality)
+- Ink! contract run on pallet-contract (currently supported)
+- Solidity contracts comiled with solc run on pallet-evm (supported but outdated)
+- Solidity contracts compiled with solang and run on pallet-contract (new funtionality)
 
 The tool is run with following commands:
+```
 smart-bench [OPTIONS] --instance-count <INSTANCE_COUNT> --call-count <CALL_COUNT> <CHAIN> [CONTRACTS] --url <WS_NODE_ADRESS>
-
+```
 where as a chain can be used ink-wasm, sol-wasm or evm
+
 example:
+```
 cargo run --release -- ink-wasm erc20 erc1155 --instance-count 10 --call-count 20 --url ws://localhost:9988
 cargo run --release -- sol-wasm erc20 erc1155 --instance-count 10 --call-count 20 --url ws://localhost:9988
 cargo run --release -- evm erc20 erc1155 --instance-count 10 --call-count 20 --url ws://localhost:9988
+```
 
 The performance messurements are run against test network, which is setup using zombinet.
 Required scripts are delivered with the tool.
@@ -38,12 +42,14 @@ The tool is integrated with github CI, and each night produce messurements data 
 using newest released versions of parachain.
 Messurement data are sent by collector to database for further processing.
 Each collected stats contains:
+```
 Block number
 PoV size 
 Block Weight - reference time and proof size
 Witness
 Block size
 Number of extrinsics processed in block
+```
 Additionally we store date and time of the test and versions of parachains..
 
 Data colleted in database can be drawn using visual dashboard which comes with the tool.
