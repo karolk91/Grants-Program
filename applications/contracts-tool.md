@@ -15,6 +15,8 @@ Our team has strong interest in contracts development on Polkadot and building P
 
 ### Project Details
 
+#### Generating benchmarking results
+
 Project is based on smart-bench Parity repo https://github.com/paritytech/smart-bench and developed in rust language.
 Apart of existing ink! and solidity contracts support, will be introduces support for solang compiled contract running on pallet-contract.
 Finally the tool will messure performance of:
@@ -50,15 +52,39 @@ Witness
 Block size
 Number of extrinsics processed in block
 ```
-Additionally we store date and time of the test and versions of parachains..
 
-Data colleted in database can be drawn using visual dashboard which comes with the tool.
-Maybe Rust perf site?
+#### Performance tracking for CI/CD
 
+Architecture for performance tracking tooling is built upon the concept of [Flat Data](https://githubnext.com/projects/flat-data), whereas sets of data is stored within repository itself. Data is being created and processed for storage on a timely schedule or it can be triggered by external event (pull request or merge event from other repositories) so the data in the repository can stay up to date.
+
+To implement such architecture Github repository is created. It is to be self sufficient in terms of spinning up benchmarking environemnt, storing and processing benchmark results created within run of Github Action workflow. Repository contains all configuration files required for provisioning of benchmarking environemnt. Other provided utilities also allow to effortlessly start local Grafana and InfluxDB instances (available as Dockerfiles and Docker Compose configuration) for out of the box experience of running visualisations against data where all of this is part of the same repository. For syncing of most recent data standard git operations apply (sync local git repository with remote origin to get latest data). 
+
+Github Action is responsible for running smart-bench software against zombienet to create benchmarking results. Results are then postprocessed to also include various metadata about environment used for its creation. Results are then commited and pushed to the repository. Metadata of benchmark results consists of various properties such as (consider following as draft, to be defined exactly as implementation proceeds):
+
+- commit hashes of zombienet, parachain implementation (moonbeam or contract-pallet based) and smart-bench
+- human readable versions of above if can be determined
+- type of contract
+- contract compiler
+- parachain to run the contract
+
+Measurements themselves are raw data as returned by smart-bench software. 
+
+Performance tracking is concered with https://github.com/PureStake/moonbeam and https://github.com/paritytech/substrate (pallet-contracts) repositories . Coverage of the benchmarks strives to create results for all commits that are referenced by branches and pull requests of the repositories above (refs/heads/* and refs/pull/*/merge). So for every branch and pull request, at the time of running of Github Action's workflow, results will be created and stored in the repository (exclusions possible to ignore old/EOL branches). Github Action's workflow determines non-existing benchamrking results per commit hash and makes use of matrix strategy to concurently run jobs in parallel for all missing hashes.
+
+Summary of items provided by repository:
+- Dockerfiles to run grafana, influxdb, smart-bench
+- Docker Compose to ease local setup of all components
+- Scripts to transform smart-bench output to data format ingestible by InfluxDB
+- CLI app to implement common tasks to work with project:
+    - find measurements for given set of metadata values / pull request / commit hash
+    - request to create measurements for given set of metadata values / pull request / pull request / commit hash 
+    - check status of measurements creation process
+    - determine branches and pull requests for which benchmarking results are missing
+- Scripts implementing uploading data to InfluxDB will try to parse benchmarking data in smart-bench outputed format to extract separate measurements and accompany them with metadata to create contexts for visualisations. Repository will also provide configuration files for dashboards of Grafana
 
 Limitations:Investigate 
 the project does not compile the contracts by itself, contracts are delivered in binary form.
-the project does not provide server/instance with database and visual dashboard.
+
 
 ### Ecosystem Fit
 
@@ -76,6 +102,10 @@ It is going to be used also to messure ink! language performance by Parity core 
 
 - **Contact Name:** Sebastian Miasojed
 - **Contact Email:** s.miasojed@gmail.com
+- **Website:** 
+
+- **Contact Name:** Karol Kokoszka
+- **Contact Email:** karol.k91@gmail.com
 - **Website:** 
 
 ### Legal Structure
@@ -141,10 +171,12 @@ https://github.com/paritytech/blockstats/pull/22
 
 | Number | Deliverable | Specification |
 | -----: | ----------- | ------------- |
-| 1. | CI integration | Tool integrated with CI for Moonbeam releses |
-| 2. | data collector| messurement data collector library sending them to DB |
-| 3. | visual dashboard | Visual dashboard with performance plots |
-
+| 1. | Dockerized benchmarking | Create Docker and docker-compose related configurations to build and start smart-bench, zombienet and parachains to generate benchmarking results |
+| 2. | Github Actions benchmark jobs | Create workflow and implement a job to utilize Dockerized benchmarking for generating results and uploading them to repostory |
+| 3. | Results processing tools | Implementation of tooling to translate smart-bench output format to format of InfluxDB |
+| 4. | Dockerized visualisations | Create Docker and docker-compose related configurations to run Grafana and InfluxDB preconfigured with dashboards and measurements |
+| 5. | CLI tool | Implementation of tooling to determine branches and pull requests of remote repositories for which measurements are missing |
+| 6. | Github Actions workflow | Create complete workflow running parallel jobs based on matrix strategy for all missing measurements |
 
 ...
 
